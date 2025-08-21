@@ -35,9 +35,9 @@ export async function Header() {
                 </button>
               </form>
               {currentUser && (
-                <span className="text-sm text-gray-300 border-l border-gray-600 pl-4">
+                <Link href="/perfil" className="text-sm text-gray-300 border-l border-gray-600 pl-4 hover:text-cyan-400">
                   Olá, {currentUser.nome}
-                </span>
+                </Link>
               )}
             </div>
           ) : (
