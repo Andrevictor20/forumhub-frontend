@@ -1,10 +1,17 @@
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { logout } from "@/app/actions";
+import { getMe } from "@/services/user_service";
+import type { User } from "@/types";
 
 export async function Header() {
   const token = (await cookies()).get('token')?.value;
   const isLoggedIn = !!token;
+
+  let currentUser: User | null = null;
+  if (isLoggedIn) {
+    currentUser = await getMe(token);
+  }
 
   return (
     <header className="bg-gray-800 border-b border-gray-700">
@@ -27,11 +34,21 @@ export async function Header() {
                   Sair
                 </button>
               </form>
+              {currentUser && (
+                <span className="text-sm text-gray-300 border-l border-gray-600 pl-4">
+                  Olá, {currentUser.nome}
+                </span>
+              )}
             </div>
           ) : (
-            <Link href="/login" className="px-4 py-2 text-sm text-white bg-cyan-600 rounded-md hover:bg-cyan-700">
-              Login
-            </Link>
+            <div className="flex items-center gap-4">
+               <Link href="/cadastrar" className="px-4 py-2 text-sm text-gray-300 rounded-md hover:bg-gray-700">
+                Cadastre-se
+              </Link>
+              <Link href="/login" className="px-4 py-2 text-sm text-white bg-cyan-600 rounded-md hover:bg-cyan-700">
+                Login
+              </Link>
+            </div>
           )}
         </div>
       </nav>

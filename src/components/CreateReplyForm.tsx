@@ -1,30 +1,20 @@
 'use server';
 
-import { createReply } from "@/services/api";
-import { cookies } from "next/headers";
-import { revalidatePath } from "next/cache";
+import { handleCreateReply } from "@/app/respostas/actions";
 
 interface CreateReplyFormProps {
   topicId: string;
 }
 
 export async function CreateReplyForm({ topicId }: CreateReplyFormProps) {
-
-  async function handleCreateReply(formData: FormData) {
+  // A ação agora é definida e usada diretamente aqui
+  async function createReplyAction(formData: FormData) {
     'use server';
-    
-    const token = (await cookies()).get('token')?.value;
-    formData.append('topicoId', topicId);
-    
-    const result = await createReply(formData, token);
-
-    if (result) {
-      revalidatePath(`/topicos/${topicId}`);
-    }
+    await handleCreateReply(formData, topicId);
   }
 
   return (
-    <form action={handleCreateReply} className="mt-6">
+    <form action={createReplyAction} className="mt-6">
       <textarea
         name="mensagem"
         rows={5}

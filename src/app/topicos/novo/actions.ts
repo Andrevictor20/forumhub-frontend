@@ -1,17 +1,17 @@
 'use server';
 
-import { createTopic } from "@/services/api";
+import { createTopic } from "@/services/topic_service";
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
+import { revalidateTag } from "next/cache";
 
 export async function handleCreateTopic(formData: FormData) {
   const token = (await cookies()).get('token')?.value;
-
   const result = await createTopic(formData, token);
 
   if (!result) {
-    return redirect('/topicos/novo?error=CreationFailed');
+    return { success: false, message: "Falha ao criar o tópico." };
   }
 
-  redirect('/');
+  revalidateTag('topics');
+  return { success: true, message: "Tópico criado com sucesso!" };
 }

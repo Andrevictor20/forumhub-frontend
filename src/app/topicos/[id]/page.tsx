@@ -1,15 +1,12 @@
-import { getTopicById, getRepliesByTopicId, getMe } from "@/services/api";
+import { getTopicById } from "@/services/topic_service";
+import { getRepliesByTopicId } from "@/services/reply_service";
+import { getMe } from "@/services/user_service";
 import { CreateReplyForm } from "@/components/CreateReplyForm";
 import { ReplyCard } from "@/components/ReplyCard";
 import { cookies } from "next/headers";
-import type { Topic, Reply } from "@/types";
+import Link from "next/link";
+import type { Topic, Reply, User } from "@/types";
 import { handleDeleteTopic } from "./actions";
-
-interface User {
-  id: number;
-  nome: string;
-  login: string;
-}
 
 interface TopicDetailPageProps {
   params: {
@@ -18,10 +15,12 @@ interface TopicDetailPageProps {
 }
 
 export default async function TopicDetailPage({ params }: TopicDetailPageProps) {
+  const { id } = await params;
   const token = (await cookies()).get('token')?.value;
   
-  const topic: Topic | null = await getTopicById(params.id, token);
-  const replies: Reply[] = await getRepliesByTopicId(params.id, token);
+  // Buscando dados de diferentes serviços
+  const topic: Topic | null = await getTopicById(id, token);
+  const replies: Reply[] = await getRepliesByTopicId(id, token);
   const currentUser: User | null = await getMe(token);
 
   if (!topic) {
@@ -32,8 +31,8 @@ export default async function TopicDetailPage({ params }: TopicDetailPageProps) 
     );
   }
 
-  const deleteAction = handleDeleteTopic.bind(null, params.id);
-  const isAuthor = currentUser ? currentUser.nome === topic.nomeAutor : false;
+  const deleteAction = handleDeleteTopic.bind(null, id);
+  const isTopicAuthor = currentUser ? currentUser.nome === topic.nomeAutor : false;
 
   return (
     <main className="container mx-auto p-8">
@@ -47,15 +46,20 @@ export default async function TopicDetailPage({ params }: TopicDetailPageProps) 
             </p>
           </div>
           
-          {isAuthor && (
-            <form action={deleteAction}>
-              <button
-                type="submit"
-                className="px-4 py-2 text-sm font-medium text-red-400 rounded-lg hover:bg-red-900/50 focus:outline-none"
-              >
-                Excluir
-              </button>
-            </form>
+          {isTopicAuthor && (
+            <div className="flex items-center gap-2">
+              <Link href={`/topicos/${id}/editar`} className="px-4 py-2 text-sm font-medium text-gray-300 rounded-lg hover:bg-gray-700">
+                Editar
+              </Link>
+              <form action={deleteAction}>
+                <button
+                  type="submit"
+                  className="px-4 py-2 text-sm font-medium text-red-400 rounded-lg hover:bg-red-900/50"
+                >
+                  Excluir
+                </button>
+              </form>
+            </div>
           )}
         </div>
         <div className="prose prose-invert max-w-none text-gray-300">
@@ -67,14 +71,22 @@ export default async function TopicDetailPage({ params }: TopicDetailPageProps) 
         <h2 className="text-2xl font-semibold mb-4">Respostas</h2>
         <div className="space-y-4">
           {replies && replies.length > 0 ? (
-            replies.map(reply => <ReplyCard key={reply.id} reply={reply} />)
+            replies.map(reply => (
+              <ReplyCard 
+                key={reply.id} 
+                reply={reply} 
+                topicId={id}
+                currentUser={currentUser} 
+                isTopicAuthor={isTopicAuthor}
+              />
+            ))
           ) : (
             <div className="bg-gray-800 p-6 rounded-lg border border-gray-700">
               <p className="text-gray-500">Nenhuma resposta ainda.</p>
             </div>
           )}
         </div>
-        <CreateReplyForm topicId={params.id} />
+        <CreateReplyForm topicId={id} />
       </div>
     </main>
   );

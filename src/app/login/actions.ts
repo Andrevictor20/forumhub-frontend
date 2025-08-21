@@ -1,6 +1,6 @@
 'use server';
 
-import { loginUser } from "@/services/api";
+import { loginUser } from "@/services/user_service"; // CAMINHO CORRIGIDO
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 

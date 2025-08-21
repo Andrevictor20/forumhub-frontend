@@ -1,4 +1,3 @@
-
 export interface Topic {
   id: number;
   titulo: string;
@@ -6,10 +5,23 @@ export interface Topic {
   nomeAutor: string;
   curso: string;
 }
+
 export interface Reply {
   id: number;
   mensagem: string;
   nomeAutor: string;
   dataCriacao: string; 
   solucao: boolean;
+}
+
+export interface User {
+  id: number;
+  nome: string;
+  login: string;
+}
+
+export interface PaginatedTopicsResponse {
+  content: Topic[];
+  totalPages: number;
+  totalElements: number;
 }
