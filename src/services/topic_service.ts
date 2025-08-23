@@ -1,22 +1,35 @@
 import type { PaginatedTopicsResponse } from "@/types";
 
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export async function getTopics(token: string | undefined): Promise<PaginatedTopicsResponse> {
-  if (!token) return { content: [], totalPages: 0, totalElements: 0 };
+export async function getTopics(token: string | undefined, page: number = 0, query?: string, authorName?: string): Promise<PaginatedTopicsResponse> {
+  if (!token) return { content: [], totalPages: 0, totalElements: 0, number: 0 };
   
+  const params = new URLSearchParams({
+    page: page.toString(),
+    size: '10',
+  });
+  if (query) {
+    params.append('q', query); // Usa o novo parâmetro 'q'
+  }
+  if (authorName) {
+    params.append('autor', authorName);
+  }
+
   try {
-    const response = await fetch(`${API_URL}/topicos`, {
+    const response = await fetch(`${API_URL}/topicos?${params.toString()}`, {
       headers: { 'Authorization': `Bearer ${token}` },
-      next: { tags: ['topics'] },
+      next: { tags: ['topics', `topics-by:${authorName}`] },
     });
     if (!response.ok) throw new Error('Falha ao buscar tópicos da API');
     return await response.json();
   } catch (error) {
     console.error("Erro no serviço da API:", error);
-    return { content: [], totalPages: 0, totalElements: 0 };
+    return { content: [], totalPages: 0, totalElements: 0, number: 0 };
   }
 }
+
 
 export async function getTopicById(id: string, token: string | undefined) {
   if (!token) throw new Error('Acesso não autorizado');

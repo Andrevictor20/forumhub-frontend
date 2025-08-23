@@ -3,11 +3,10 @@
 import { handleCreateTopic } from "@/app/topicos/novo/actions";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { useRef } from "react";
+import { SubmitButton } from "./SubmitButton";
 
 export function CreateTopicForm() {
   const router = useRouter();
-  const formRef = useRef<HTMLFormElement>(null);
 
   async function clientAction(formData: FormData) {
     const result = await handleCreateTopic(formData);
@@ -21,7 +20,7 @@ export function CreateTopicForm() {
   }
 
   return (
-    <form ref={formRef} action={clientAction} className="space-y-6 bg-gray-800 p-8 rounded-lg border border-gray-700">
+    <form action={clientAction} className="space-y-6 bg-gray-800 p-8 rounded-lg border border-gray-700">
       <div>
         <label htmlFor="titulo" className="block mb-2 text-sm font-medium text-gray-300">
           Título do Tópico
@@ -58,12 +57,12 @@ export function CreateTopicForm() {
           required
         />
       </div>
-      <button
+      <SubmitButton
         type="submit"
-        className="w-full px-4 py-2 text-white bg-cyan-600 rounded-md hover:bg-cyan-700"
+        className="w-full px-4 py-2 text-white bg-cyan-600 rounded-md hover:bg-cyan-700 disabled:bg-cyan-800 disabled:cursor-not-allowed"
       >
         Publicar Tópico
-      </button>
+      </SubmitButton>
     </form>
   );
 }

@@ -4,6 +4,7 @@ export interface Topic {
   mensagem: string;
   nomeAutor: string;
   curso: string;
+  dataCriacao: string; 
 }
 
 export interface Reply {
@@ -24,4 +25,5 @@ export interface PaginatedTopicsResponse {
   content: Topic[];
   totalPages: number;
   totalElements: number;
+  number: number; 
 }

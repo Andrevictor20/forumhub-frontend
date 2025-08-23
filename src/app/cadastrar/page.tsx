@@ -1,4 +1,5 @@
 import { handleCreateUser } from "./actions";
+import { SubmitButton } from "@/components/SubmitButton";
 
 interface RegisterPageProps {
   searchParams: {
@@ -6,11 +7,12 @@ interface RegisterPageProps {
   };
 }
 
-export default function RegisterPage({ searchParams }: RegisterPageProps) {
-  const hasError = searchParams.error === 'RegistrationFailed';
+export default async function RegisterPage({ searchParams }: RegisterPageProps) {
+  const resolvedSearchParams = await searchParams;
+  const hasError = resolvedSearchParams.error === 'RegistrationFailed';
 
   return (
-    <main className="container mx-auto flex items-center justify-center min-h-screen">
+    <main className="container mx-auto flex items-center justify-center min-h-screen px-4">
       <div className="w-full max-w-md p-8 space-y-6 bg-gray-800 rounded-lg shadow-md border border-gray-700">
         <h1 className="text-2xl font-bold text-center text-white">
           Criar Nova Conta
@@ -67,12 +69,12 @@ export default function RegisterPage({ searchParams }: RegisterPageProps) {
               minLength={6}
             />
           </div>
-          <button
+          <SubmitButton
             type="submit"
-            className="w-full px-4 py-2 text-white bg-cyan-600 rounded-md hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-cyan-500"
+            className="w-full px-4 py-2 text-white bg-cyan-600 rounded-md hover:bg-cyan-700 disabled:bg-cyan-800 disabled:cursor-not-allowed"
           >
             Cadastrar
-          </button>
+          </SubmitButton>
         </form>
       </div>
     </main>

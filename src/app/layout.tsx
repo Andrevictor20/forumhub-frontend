@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Header } from "@/components/Header";
-import { ToastProvider } from "@/components/providers/ToastProvider"; // Importar
+import { Footer } from "@/components/Footer";
+import { ToastProvider } from "@/components/providers/ToastProvider";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "ForumHub",
-  description: "Plataforma de fórum para discussões e aprendizado.",
+  description: "A comunidade para desenvolvedores trocarem conhecimento.",
 };
 
 export default function RootLayout({
@@ -17,11 +18,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-br">
-      <body className={`${inter.className} bg-gray-900 text-gray-100`}>
-        <ToastProvider /> {/* Adicionar o provedor */}
+    <html lang="pt-br" className="h-full bg-gray-900">
+      <body className={`${inter.className} text-gray-100 flex flex-col min-h-full`}>
+        <ToastProvider />
         <Header />
-        <main>{children}</main> {/* Envolver children com <main> */}
+        <main className="flex-grow">
+          {children}
+        </main>
+        <Footer />
       </body>
     </html>
   );
