@@ -2,18 +2,18 @@
 
 import { deleteTopic } from "@/services/topic_service";
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 import { revalidateTag } from "next/cache";
+import type { ActionResult } from "@/types"; // Importar o novo tipo
 
-export async function handleDeleteTopic(topicId: string) {
+export async function handleDeleteTopic(topicId: string): Promise<ActionResult> {
   const token = (await cookies()).get('token')?.value;
   const result = await deleteTopic(topicId, token);
 
   if (result?.success) {
-    revalidateTag('topics'); 
+    revalidateTag('topics');
     revalidateTag(`topic:${topicId}`);
-    redirect('/');
+    return { success: true, message: "Tópico apagado com sucesso!" };
   } else {
-    redirect(`/topicos/${topicId}?error=DeletionFailed`);
+    return { success: false, message: "Falha ao apagar o tópico. Verifique as suas permissões." };
   }
 }

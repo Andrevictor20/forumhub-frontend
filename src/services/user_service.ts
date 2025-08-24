@@ -53,13 +53,19 @@ export async function getMe(token: string | undefined) {
       headers: { 'Authorization': `Bearer ${token}` },
       next: { tags: ['user:me'] },
     });
-    if (!response.ok) throw new Error('Falha ao buscar dados do usuário.');
+    
+    if (!response.ok) {
+        console.error(`Falha ao buscar dados do usuário. Status: ${response.status}`);
+        return null;
+    }
+
     return await response.json();
   } catch (error) {
-    console.error("Erro ao buscar usuário:", error);
+    console.error("Erro de rede ao buscar usuário:", error);
     return null;
   }
 }
+
 export async function updateUser(id: string, data: FormData, token: string | undefined) {
   if (!token) {
     throw new Error('Acesso não autorizado');
@@ -89,6 +95,28 @@ export async function updateUser(id: string, data: FormData, token: string | und
     return await response.json();
   } catch (error) {
     console.error("Erro ao atualizar o perfil:", error);
+    return null;
+  }
+}
+export async function deleteUser(id: string, token: string | undefined) {
+  if (!token) {
+    throw new Error('Acesso não autorizado');
+  }
+
+  try {
+    const response = await fetch(`${API_URL}/usuarios/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Falha ao excluir a conta.');
+    }
+    return { success: true };
+  } catch (error) {
+    console.error("Erro ao excluir a conta:", error);
     return null;
   }
 }

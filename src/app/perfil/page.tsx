@@ -4,6 +4,7 @@ import { getTopics } from "@/services/topic_service";
 import type { User } from "@/types";
 import { UpdateProfileForm } from "@/components/UpdateProfileForm";
 import { TopicCard } from "@/components/TopicCard";
+import { BackButton } from "@/components/BackButton";
 
 export default async function ProfilePage() {
   const token = (await cookies()).get('token')?.value;
@@ -21,6 +22,7 @@ export default async function ProfilePage() {
 
   return (
     <div className="container mx-auto p-4 sm:p-8"> {/* Padding responsivo */}
+      <BackButton/>
       <h1 className="text-3xl sm:text-4xl font-bold mb-8">Meu Perfil</h1>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Coluna de Informações e Atualização */}

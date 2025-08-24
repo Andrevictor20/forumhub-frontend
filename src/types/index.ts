@@ -3,8 +3,9 @@ export interface Topic {
   titulo: string;
   mensagem: string;
   nomeAutor: string;
+  autorAtivo: boolean;
   curso: string;
-  dataCriacao: string; 
+  dataDeCriacao: string
 }
 
 export interface Reply {
@@ -27,3 +28,8 @@ export interface PaginatedTopicsResponse {
   totalElements: number;
   number: number; 
 }
+export interface ActionResult {
+  success: boolean;
+  message: string;
+}
+

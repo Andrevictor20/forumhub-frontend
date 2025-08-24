@@ -1,8 +1,10 @@
 'use server';
 
-import { updateUser } from "@/services/user_service";
+import { deleteUser, getMe, updateUser } from "@/services/user_service";
 import { cookies } from "next/headers";
 import { revalidateTag } from "next/cache";
+import { redirect } from "next/navigation";
+
 
 export async function handleUpdateUser(userId: string, formData: FormData) {
   const token = (await cookies()).get('token')?.value;
@@ -23,5 +25,23 @@ export async function handleUpdateUser(userId: string, formData: FormData) {
     return { success: true, message: "Perfil atualizado com sucesso!" };
   } else {
     return { success: false, message: "Falha ao atualizar o perfil." };
+  }
+}
+export async function handleDeleteAccount() {
+  const token = (await cookies()).get('token')?.value;
+  const currentUser = await getMe(token);
+
+  if (!currentUser) {
+    return { success: false, message: "Utilizador não encontrado." };
+  }
+
+  const result = await deleteUser(currentUser.id.toString(), token);
+
+  if (result?.success) {
+    (await cookies()).delete('token');
+    revalidateTag('user:me');
+    return { success: true, message: "Conta excluída com sucesso." };
+  } else {
+    return { success: false, message: "Falha ao excluir a conta." };
   }
 }

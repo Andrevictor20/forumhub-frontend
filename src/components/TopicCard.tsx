@@ -13,7 +13,15 @@ export function TopicCard({ topic }: TopicCardProps) {
         <p className="text-gray-400 mb-4 line-clamp-2">{topic.mensagem}</p>
         <div className="flex justify-between items-center text-sm text-gray-500">
           <span>Curso: <strong className="font-medium text-cyan-400">{topic.curso}</strong></span>
-          <span>Autor: <strong className="font-medium text-gray-300">{topic.nomeAutor}</strong></span>
+          
+          <div className="flex items-center gap-2">
+            <span>Autor:</span>
+            <span className={!topic.autorAtivo ? 'line-through text-gray-600' : 'font-medium text-gray-300'}>
+              {topic.nomeAutor}
+            </span>
+            {!topic.autorAtivo && <span className="text-xs text-red-500 font-semibold">[Inativo]</span>}
+          </div>
+
         </div>
       </article>
     </Link>
